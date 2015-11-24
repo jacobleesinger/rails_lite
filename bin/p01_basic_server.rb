@@ -6,14 +6,22 @@ require 'rack'
 
 app = Proc.new do |env|
   req = Rack::Request.new(env)
-  food = req.params["food"]
-  res = Rack::Response.new(['food'])
-  res['Content-Type'] = 'text/html'
-  res.write(food)
+  res = Rack::Response.new
+  RackApp.new(req, )
   res.finish
 end
 
+
+class RackApp
+  def self.call(env)
+    req = Rack::Request.new(env)
+    res = Rack::Response.new
+    res.write("hello")
+    res.finish
+  end
+end
+
 Rack::Server.start(
-  app: app,
+  app: RackApp,
   Port: 3000
 )
