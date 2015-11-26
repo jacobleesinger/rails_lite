@@ -155,5 +155,3 @@ describe 'ControllerBase#initialize' do
     end
   end
 end
-
-
