@@ -1,49 +1,31 @@
-require 'rack'
-require 'byebug'
 require 'json'
+require_relative 'flash_now'
 
 class Flash
-  attr_reader :flashed, :flash
+
   def initialize(req)
-    if req.cookies["_rails_lite_app"]
-      @flash = JSON.parse(req.cookies["_rails_lite_app"])
-    else
-      @flash = {}
+    flash = req.cookies["flash"]
+    if flash
+      flash_parse = JSON.parse(flash)
+      flash_parse.each { |k, v| now[k.to_sym] = v }
     end
-  end
-
-  def [](key)
-    @flash[key.to_s]
-  end
-
-  def []=(key, val)
-    @flash[key.to_s] = val
+    @flash = {}
   end
 
   def now
-    @now ||= FlashNow.new(self)
-    @now.flash
-    # debugger
+    @flash_now ||= FlashNow.new
   end
 
-  def flashed?
-    @flashed ||= false
-    flashed
+  def [](key)
+    self.now[key]
+  end
+
+  def []=(key, val)
+    @flash[key] = val
   end
 
   def store_flash(res)
-    cookie = flash.to_json
-    res.set_cookie("_rails_lite_app", {path: '/', value: cookie})
-  end
-end
-
-class FlashNow
-  def initialize(flash)
-    # debugger
-    @flash = flash
-  end
-
-  def flash
-    @flash.flash
+    flash = { path: "/", value: @flash.to_json }
+    res.set_cookie("flash", flash)
   end
 end
