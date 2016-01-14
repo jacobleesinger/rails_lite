@@ -52,8 +52,14 @@ class ControllerBase
     @flash ||= Flash.new(req)
   end
 
-  def invoke_action(name)
-    send name
-    render(name) unless already_built_response?
-  end
+  def invoke_action(name, csrf)
+   if csrf && @protect
+     raise "Invalid Authenticity Token" unless same_token?
+     self.send(name)
+     reset_authenticity_token!
+   else
+     self.send(name)
+   end
+   render(name) unless already_built_response?
+ end
 end
