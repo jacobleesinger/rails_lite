@@ -1,7 +1,12 @@
 require_relative 'db_connection'
 require 'active_support/inflector'
+require_relative 'searchable'
+require_relative 'associatable'
 
-class SQLObject
+class model_base
+  extend Searchable
+  extend Associatable
+
   def self.columns
     return @columns if @columns
     cols = DBConnection.execute2(<<-SQL).first

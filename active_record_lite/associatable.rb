@@ -107,7 +107,3 @@ module Associatable
     @assoc_options
   end
 end
-
-class SQLObject
-  extend Associatable
-end
