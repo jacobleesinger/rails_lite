@@ -4,6 +4,7 @@ require 'erb'
 require 'active_support/inflector'
 require_relative './session'
 require_relative './flash'
+requir_relative './csrf'
 
 
 class ControllerBase
