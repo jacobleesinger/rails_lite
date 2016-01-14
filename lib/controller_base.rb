@@ -3,6 +3,8 @@ require 'active_support/core_ext'
 require 'erb'
 require 'active_support/inflector'
 require_relative './session'
+require_relative './flash'
+
 
 class ControllerBase
   attr_reader :req, :res, :params
@@ -10,7 +12,9 @@ class ControllerBase
   def initialize(req, res, route_params = {})
     @req = req
     @res = res
-    @params = route_params
+    @route_params = route_params
+    @params = req.params.merge(route_params)
+    @already_built_response = false
   end
 
   def already_built_response?
